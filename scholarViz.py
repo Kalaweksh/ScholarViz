@@ -27,18 +27,19 @@ def query_to_search(keys: list[str], chart_type: str):
     df = pd.DataFrame(data = {key: [f"""<a href="{results[x]["url"]}">{results[x]["title"]}</a>""" if key == "title" \
                                     else results[x][key].get("name") if (key == "journal" and results[x][key] !=None) else results[x][key]  for x in range(100)] for key in keys})
     df["plainTitle"] = [results[x]["title"] for x in range(100)]
-    if chart_type == "Bar Graph":
+    df["publicationDate"].fillna("Uncertain", inplace=True)
+    if "Bar Graph" in chartType:
         if sortTypeToColumn[sortType] in ["citationCount", "influentialCitationCount"]:
             ascending = False
         else:
             ascending = True
         df = df.sort_values(sortTypeToColumn[sortType], ascending=ascending)
     if chart_type.lower() == "bar":
-        graph = px.bar(df.iloc[:numResults], x = "title", y = ["citationCount", "influentialCitationCount"], title=f"Visualising the Academic Influence of Papers related to {query.capitalize()}", barmode="group", height = 1000, width = 1000, labels={key: key.capitalize() for key in keys if key != "url"})
+        graph = px.bar(df.iloc[:numResults], x = "title", y = ["citationCount", "influentialCitationCount"], title=f"Visualising the Academic Influence of Papers related to {query.capitalize()}", barmode="group", height = 1000, width = 1000, labels={key: key.capitalize() for key in keys if key != "url"}, hover_data=["publicationDate"], hover_name="title")
         graph.update_xaxes(tickangle=60)
         graph.update_yaxes(title="Citations Count")
     elif chart_type.lower() == "bubble":
-        graph = px.scatter(df.iloc[:numResults], x ="publicationDate", y="influentialCitationCount", size=np.power(df.iloc[:numResults]["citationCount"], np.full(numResults, 0.7)) + 5, hover_name="title", log_y=True, color="journal",  )
+        graph = px.scatter(df.iloc[:numResults], x ="publicationDate", y="influentialCitationCount", size=np.power(df.iloc[:numResults]["citationCount"], np.full(numResults, 0.7)) + 5, hover_name="title", log_y=True, color="venue", title=f"Visualising the Academic Influence of Papers related to {query.capitalize()}" )
 
     #query = st.text_input(label="Search a topic", placeholder="Search Query")
     #submitButton = st.button(label="Search", on_click=query_to_search, args=(query,  ["title", "url", "citationCount", "influentialCitationCount"]))    
@@ -63,9 +64,9 @@ with st.sidebar:
         "Number of Results",
         10, 100, 10, 1
     )
-    updateResults = st.button("Update Results", on_click=query_to_search, args=(["title", "url", "citationCount", "influentialCitationCount", "publicationDate", "journal"], chartType[:chartType.index(" ")] ))
+    updateResults = st.button("Update Results", on_click=query_to_search, args=(["title", "url", "citationCount", "influentialCitationCount", "publicationDate", "venue"], chartType[:chartType.index(" ")] ))
 query = st.text_input(label="Search for topic", placeholder="query")
-submitButton = st.button(label="Search", on_click=query_to_search, args=(["title", "url", "citationCount", "influentialCitationCount", "publicationDate", "journal"], chartType[:chartType.index(" ")]))
+submitButton = st.button(label="Search", on_click=query_to_search, args=(["title", "url", "citationCount", "influentialCitationCount", "publicationDate", "venue"], chartType[:chartType.index(" ")]))
 
 
 
