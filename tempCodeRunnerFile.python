@@ -1,0 +1,9 @@
+from semanticscholar import SemanticScholar
+scholar = SemanticScholar()
+
+
+
+results = scholar.search_paper(query="AI", limit=100)
+for result in range(100):
+    if results[result]["journal"] == None:
+        print(results[result])
