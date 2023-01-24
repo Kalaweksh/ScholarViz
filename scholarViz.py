@@ -28,7 +28,7 @@ def query_to_search(keys: list[str], chart_type: str):
                                     else results[x][key].get("name") if (key == "journal" and results[x][key] !=None) else results[x][key]  for x in range(100)] for key in keys})
     df["plainTitle"] = [results[x]["title"] for x in range(100)]
     df["publicationDate"].fillna("Uncertain", inplace=True)
-    if "Bar Graph" in chartType:
+    if "Bar" in chartType:
         if sortTypeToColumn[sortType] in ["citationCount", "influentialCitationCount"]:
             ascending = False
         else:
