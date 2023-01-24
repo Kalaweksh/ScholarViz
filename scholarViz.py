@@ -39,7 +39,7 @@ def query_to_search(keys: list[str], chart_type: str):
         graph.update_xaxes(tickangle=60)
         graph.update_yaxes(title="Citations Count")
     elif chart_type.lower() == "bubble":
-        graph = px.scatter(df.iloc[:numResults], x ="publicationDate", y="influentialCitationCount", size=np.power(df.iloc[:numResults]["citationCount"], np.full(numResults, 0.7)) + 5, hover_name="title", log_y=True, color="venue", title=f"Visualising the Academic Influence of Papers related to {query.capitalize()}" , width=1100)
+        graph = px.scatter(df.iloc[:numResults], x ="publicationDate", y="influentialCitationCount", size=np.power(df.iloc[:numResults]["citationCount"], np.full(numResults, 0.7)) + 5, hover_name="title", log_y=True, color="venue", title=f"Visualising the Academic Influence of Papers related to {query.capitalize()}" , width=1000)
 
     #query = st.text_input(label="Search a topic", placeholder="Search Query")
     #submitButton = st.button(label="Search", on_click=query_to_search, args=(query,  ["title", "url", "citationCount", "influentialCitationCount"]))    
